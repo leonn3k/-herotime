@@ -5,7 +5,7 @@
 {{/* name your cooldown name (anything works) */}}
 {{$name := "herotimecd"}}
 {{/* Length of the cooldown (in seconds) */}}
-{{$lengthSec := 300}}
+{{$lengthSec := 90}}
 
 {{/* CREATING VARIABLES DO NOT TOUCH */}}
 {{$id := 0}}
@@ -22,8 +22,25 @@
 {{dbSetExpire (toInt64 $id) $key "cooldown" $lengthSec}}
 
 {{/* YOUR COMMAND HERE */}}
-{{$aliennames := (cslice "Heatblast" "Wildmutt" "Diamondhead" "*XLR8*" "Grey Matter" "Four Arms" "Stinkfly" "Ripjaws" "Upgrade" "Ghostfreak" "Cannonbolt" "Wildvine" "Spitter" "Buzzshock" "Arctiguana" "Blitzwolfer" "Upchuck" "Snare-oh" "Frankenstrike" "Ditto" "Way Big" "Eye Guy"  "Swampfire" "Echo Echo" "Humungousaur" "Jetray" "Big Chill" "Chromastone" "Brainstorm" "Spidermonkey" "Goop" "Alien X" "Lodestar" "Rath" "Nanomech" "Rocks" "Squidstrictor" "Water Hazard" "Ampfibian" "Armodrillo" "Terrapsin" "NRG" "*Fasttrack*" "Clockwork" "Chamalien" "Eatle" "Juryrigg" "Shocksquatch" "Feedback" "Bloxx" "Gravattack" "Crashhopper" "Ball Weevil" "Walkatrout" "Pesky Dust" "Mole-Stache" "The Worst" "Kickin Hawk" "Toepick" "Astrodactyl" "Bullfrag" "Atomix" "Gutrot" "Whampire") }}
-{{$nameslength := len $aliennames}}
-{{$roll := randInt $nameslength}}
-{{.User.Mention}} has transformed into **{{index $aliennames $roll}}**!
+{{/* Initialise the names for aliens & for the upgrade types */}}
+{{$aliennames := (cslice "Heatblast" "Wildmutt" "Diamondhead" "*XLR8*" "Grey Matter" "Four Arms" "Stinkfly" "Ripjaws" "Upgrade" "Ghostfreak" "Cannonbolt" "Wildvine" "Spitter" "Buzzshock" "Arctiguana" "Blitzwolfer" "Upchuck" "Snare-oh" "Frankenstrike" "Ditto" "Way Big" "Eye Guy"  "Swampfire" "Echo Echo" "Humungousaur" "Jetray" "Big Chill" "Chromastone" "Brainstorm" "Spidermonkey" "Goop" ":sparkles: Alien X :sparkles:" "Lodestar" "Rath" "Nanomech" "Rocks" "Squidstrictor" "Water Hazard" "Ampfibian" "Armodrillo" "Terraspin" "NRG" "*Fasttrack*" "Clockwork" "Chamalien" "Eatle" "Juryrigg" "Shocksquatch" "Feedback" "Bloxx" "Gravattack" "Crashhopper" "Ball Weevil" "Walkatrout" "Pesky Dust" "Mole-Stache" "The Worst" "Kickin Hawk" "Toepick" "Astrodactyl" "Bullfrag" "Atomix" "Gutrot" "Whampire" "Gax" "Shock Rock" "Slapback" "Wreckingbolt" "Thornblade" "Underflow" "Dark Matter" "Crystalfist" "Bootleg" "Quad Smack" "Hot Shot" "Rush" "Skunkmoth" "Bashmouth" "AntiVilgax" "Alien V" "Ventrilosquid" "Thriller Whale" "Squirtapiller" "Snark Tanque" "Decagon Vreedle" "Hippopotamass" "Bungeesponge" "Alien Z") }}
+{{$upgradetype := (cslice "Ultimate" "Negative" "Omni-Kix" "Omni-Naut" "Omni-Enhanced")}}
+
+{{/* set cslice length variables so we don't need to manually count the length of the cslices */}}
+{{$upgradetypelength := len $upgradetype}}
+{{$aliennameslength := len $aliennames}}
+
+{{/* do random rolls of variables to pick aliens, upgrade type, and upgrade chance */}}
+{{$upgradetyperoll := randInt $upgradetypelength}}
+{{$aliennamesroll := randInt $aliennameslength}}
+{{$upgradechanceroll := randInt 10}}
+
+{{/* if roll chance is 10, give user an upgraded alien, otherwise give them un-upgraded alien. I wanted this to be more elegant but i can't figure out string manipulation in this code.*/}}
+{{if gt $upgradechanceroll 8}}
+{{.User.Mention}} has transformed into **{{index $upgradetype $upgradetyperoll}}** **{{index $aliennames $aliennamesroll}}**!
+{{else}}
+{{.User.Mention}} has transformed into **{{index $aliennames $aliennamesroll}}**!
 {{end}}
+
+{{end}}
+{{/* end cooldown enabled command*/}}
