@@ -3,9 +3,10 @@
 {{/* 0 for per user, 1 for global */}}
 {{$isGlobal := 0}}
 {{/* name your cooldown name (anything works) */}}
-{{$name := "herotimecd"}}
+{{$name := "herotime"}}
 {{/* Length of the cooldown (in seconds) */}}
-{{$lengthSec := 90}}
+{{$lengthSec := 5}}
+{{$mID := ""}}
 
 {{/* CREATING VARIABLES DO NOT TOUCH */}}
 {{$id := 0}}
@@ -14,33 +15,89 @@
 {{$id = .User.ID}}
 {{end}}
 
-
 {{if dbGet (toInt64 $id) $key}} 
-{{/* Code to execute when cooldown is active */}}
+	{{/* Code to execute when cooldown is active */}}
 {{else}}
-{{/* Create cooldown entry */}}
-{{dbSetExpire (toInt64 $id) $key "cooldown" $lengthSec}}
+	{{/* Create cooldown entry */}}
+	{{dbSetExpire (toInt64 $id) $key "cooldown" $lengthSec}}
 
 {{/* YOUR COMMAND HERE */}}
 {{/* Initialise the names for aliens & for the upgrade types */}}
-{{$aliennames := (cslice "Heatblast" "Wildmutt" "Diamondhead" "*XLR8*" "Grey Matter" "Four Arms" "Stinkfly" "Ripjaws" "Upgrade" "Ghostfreak" "Cannonbolt" "Wildvine" "Spitter" "Buzzshock" "Arctiguana" "Blitzwolfer" "Upchuck" "Snare-oh" "Frankenstrike" "Ditto" "Way Big" "Eye Guy"  "Swampfire" "Echo Echo" "Humungousaur" "Jetray" "Big Chill" "Chromastone" "Brainstorm" "Spidermonkey" "Goop" ":sparkles: Alien X :sparkles:" "Lodestar" "Rath" "Nanomech" "Rocks" "Squidstrictor" "Water Hazard" "Ampfibian" "Armodrillo" "Terraspin" "NRG" "*Fasttrack*" "Clockwork" "Chamalien" "Eatle" "Juryrigg" "Shocksquatch" "Feedback" "Bloxx" "Gravattack" "Crashhopper" "Ball Weevil" "Walkatrout" "Pesky Dust" "Mole-Stache" "The Worst" "Kickin Hawk" "Toepick" "Astrodactyl" "Bullfrag" "Atomix" "Gutrot" "Whampire" "Gax" "Shock Rock" "Slapback" "Wreckingbolt" "Thornblade" "Undertow" "Dark Matter" "Crystalfist" "Bootleg" "Quad Smack" "Hot Shot" "Rush" "Skunkmoth" "Bashmouth" "AntiVilgax" "Alien V" "Ventrilosquid" "Thriller Whale" "Squirtapiller" "Snark Tanque" "Decagon Vreedle" "Hippopotamass" "Bungeesponge" "Alien Z") }}
+{{$aliennames := (cslice "Heatblast" "Wildmutt" "Diamondhead" "*XLR8*" "Grey Matter" "Four Arms" "Stinkfly" "Ripjaws" "Upgrade" "Ghostfreak" "Cannonbolt" "Wildvine" "Spitter" "Buzzshock" "Arctiguana" "Blitzwolfer" "Upchuck" "Snare-oh" "Frankenstrike" "Ditto" "Way Big" "Eye Guy"  "Swampfire" "Echo Echo" "Humungousaur" "Jetray" "Big Chill" "Chromastone" "Brainstorm" "Spidermonkey" "Goop" ":sparkles: Alien X :sparkles:" "Lodestar" "Rath" "Nanomech" "Rocks" "Squidstrictor" "Water Hazard" "Ampfibian" "Armodrillo" "Terraspin" "NRG" "*Fasttrack*" "Clockwork" "Chamalien" "Eatle" "Juryrigg" "Shocksquatch" "Feedback" "Bloxx" "Gravattack" "Crashhopper" "Ball Weevil" "Walkatrout" "Pesky Dust" "Mole-Stache" "The Worst" "Kickin Hawk" "Toepick" "Astrodactyl" "Bullfrag" "Atomix" "Gutrot" "Whampire" "Gax" "Shock Rock" "Slapback" "Wreckingbolt" "Thornblade" "Undertow" "Dark Matter" "Crystalfist" "Bootleg" "Quad Smack" "Hot Shot" "Rush" "Skunkmoth" "Bashmouth" "AntiVilgax" "Alien V" "Ventrilosquid" "Thriller Whale" "Squirtapiller" "Snark Tanque" "Decagon Vreedle" "Hippopotamass" "Bungeesponge" "Alien Z" "Sussy Baka") }}
 {{$upgradetype := (cslice "Ultimate" "Negative" "Omni-Kix" "Omni-Naut" "Omni-Enhanced")}}
 
 {{/* set cslice length variables so we don't need to manually count the length of the cslices */}}
-{{$upgradetypelength := len $upgradetype}}
-{{$aliennameslength := len $aliennames}}
+	{{$upgradetypelength := len $upgradetype}}
+	{{$aliennameslength := len $aliennames}}
+
+{{/* Variables for author images */}}
+	{{ $authorActive := "https://cdn.discordapp.com/avatars/783308877935804416/149f63529aeb00f4eafc24933d091fbd.png" }}
+	{{ $authorTimeout := "https://i.imgur.com/sSlStfV.png" }}
+	{{ $authorNegative := "https://i.imgur.com/Tgfxb5G.png" }}
+	
+{{ $alienData := sdict 
+	"Heatblast" (sdict 
+		"image" "https://static.wikia.nocookie.net/ben10/images/2/20/Heatblast_omniverse_official.png/revision/latest/scale-to-width-down/685?cb=20141129031156"
+		"thumbnail" "https://static.wikia.nocookie.net/ben10/images/2/20/Heatblast_omniverse_official.png/revision/latest/scale-to-width-down/685?cb=20141129031156"
+		"rarity" "rare"
+	)
+}}
+
+{{ $upgradeData := sdict
+	"Negative" (sdict 
+		"embedColour" "15539494"
+		"authorIcon" "https://i.imgur.com/Tgfxb5G.png"
+	)
+}}
+
+{{/* variables for cooldown colours */}}
+	{{ $colourActive := 3066993 }}
+	{{ $colourTimeout := 11579568 }}
+	{{ $colourNegative := 15539494 }}
+	{{ $colourOmnikix := 7535923 }}
+	{{ $colourOmniNaut := 15002862 }}
+	{{ $colourOmniEnhanced := 5242878 }}
+	{{ $colourFemboy := 15315166 }}
 
 {{/* do random rolls of variables to pick aliens, upgrade type, and upgrade chance */}}
-{{$upgradetyperoll := randInt $upgradetypelength}}
-{{$aliennamesroll := randInt $aliennameslength}}
-{{$upgradechanceroll := randInt 10}}
+	{{ $upgradetyperoll := randInt $upgradetypelength }}
+	{{ $aliennamesroll := randInt $aliennameslength }}
+	{{ $upgradechanceroll := randInt 1 10 }}
+	{{ $updgradeStr := "" }}
 
 {{/* if roll chance is 10, give user an upgraded alien, otherwise give them un-upgraded alien. I wanted this to be more elegant but i can't figure out string manipulation in this code.*/}}
-{{if gt $upgradechanceroll 8}}
-{{.User.Mention}} has transformed into **{{index $upgradetype $upgradetyperoll}}** **{{index $aliennames $aliennamesroll}}**!
+{{if gt $upgradechanceroll 1}}
+	{{ $updgradeStr := (joinStr " **" (index $upgradetype $upgradetyperoll) "**") }}
 {{else}}
-{{.User.Mention}} has transformed into **{{index $aliennames $aliennamesroll}}**!
+	{{ $updgradeStr := "" }}
 {{end}}
+{{ $alienStr := (joinStr "" (index $aliennames $aliennamesroll) "") }}
+
+{{/* Create the embed and send it */}}
+{{ $embed := cembed 
+	"author" (sdict "name" "It's Hero Time!" "url" "" "icon_url" "https://cdn.discordapp.com/avatars/783308877935804416/149f63529aeb00f4eafc24933d091fbd.png") 
+	"description" (joinStr "" .User.Mention " has transformed into" $updgradeStr " **" $alienStr "**!")
+	"color" $colourActive
+	"thumbnail" (sdict "url" "")
+	"image" (sdict "url" "")
+	"footer" (sdict "text" (joinStr "" "The Omnitrix will time-out in " (toString $lengthSec) " seconds!"))
+}}
+{{ $mID := sendMessageRetID nil $embed }}
+
+{{/* Wait the length of the cooldown */}}
+{{ sleep $lengthSec }}
+
+{{/* Edit the cembed fields and then edit the message */}}
+{{ $embed = structToSdict $embed }}
+{{ $embed.Set "author" (sdict "name" "It's Hero Time!" "url" "" "icon_url" $authorTimeout) }}
+{{ $embed.Set "color" $colourTimeout }}
+{{ $embed.Set "footer" (sdict "text" "The Omnitrix timed out!") }}
+
+{{editMessage nil $mID 
+	(complexMessageEdit "embed" 
+		(cembed $embed)
+	)
+}}
 
 {{end}}
 {{/* end cooldown enabled command*/}}
