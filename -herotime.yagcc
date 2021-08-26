@@ -23,8 +23,9 @@
 
 {{/* YOUR COMMAND HERE */}}
 {{/* Initialise the names for aliens & for the upgrade types */}}
-{{$aliennames := (cslice "Heatblast" "Wildmutt" "Diamondhead" "*XLR8*" "Grey Matter" "Four Arms" "Stinkfly" "Ripjaws" "Upgrade" "Ghostfreak" "Cannonbolt" "Wildvine" "Spitter" "Buzzshock" "Arctiguana" "Blitzwolfer" "Upchuck" "Snare-oh" "Frankenstrike" "Ditto" "Way Big" "Eye Guy"  "Swampfire" "Echo Echo" "Humungousaur" "Jetray" "Big Chill" "Chromastone" "Brainstorm" "Spidermonkey" "Goop" ":sparkles: Alien X :sparkles:" "Lodestar" "Rath" "Nanomech" "Rocks" "Squidstrictor" "Water Hazard" "Ampfibian" "Armodrillo" "Terraspin" "NRG" "*Fasttrack*" "Clockwork" "Chamalien" "Eatle" "Juryrigg" "Shocksquatch" "Feedback" "Bloxx" "Gravattack" "Crashhopper" "Ball Weevil" "Walkatrout" "Pesky Dust" "Mole-Stache" "The Worst" "Kickin Hawk" "Toepick" "Astrodactyl" "Bullfrag" "Atomix" "Gutrot" "Whampire" "Gax" "Shock Rock" "Slapback" "Wreckingbolt" "Thornblade" "Undertow" "Dark Matter" "Crystalfist" "Bootleg" "Quad Smack" "Hot Shot" "Rush" "Skunkmoth" "Bashmouth" "AntiVilgax" "Alien V" "Ventrilosquid" "Thriller Whale" "Squirtapiller" "Snark Tanque" "Decagon Vreedle" "Hippopotamass" "Bungeesponge" "Alien Z" "Sussy Baka") }}
-{{$upgradetype := (cslice "Ultimate" "Negative" "Omni-Kix" "Omni-Naut" "Omni-Enhanced")}}
+{{ $aliennames := (cslice "Heatblast" "Wildmutt" "Diamondhead" "*XLR8*" "Grey Matter" "Four Arms" "Stinkfly" "Ripjaws" "Upgrade" "Ghostfreak" "Cannonbolt" "Wildvine" "Spitter" "Buzzshock" "Arctiguana" "Blitzwolfer" "Upchuck" "Snare-oh" "Frankenstrike" "Ditto" "Way Big" "Eye Guy"  "Swampfire" "Echo Echo" "Humungousaur" "Jetray" "Big Chill" "Chromastone" "Brainstorm" "Spidermonkey" "Goop" ":sparkles: Alien X :sparkles:" "Lodestar" "Rath" "Nanomech" "Rocks" "Squidstrictor" "Water Hazard" "Ampfibian" "Armodrillo" "Terraspin" "NRG" "*Fasttrack*" "Clockwork" "Chamalien" "Eatle" "Juryrigg" "Shocksquatch" "Feedback" "Bloxx" "Gravattack" "Crashhopper" "Ball Weevil" "Walkatrout" "Pesky Dust" "Mole-Stache" "The Worst" "Kickin Hawk" "Toepick" "Astrodactyl" "Bullfrag" "Atomix" "Gutrot" "Whampire" "Gax" "Shock Rock" "Slapback" "Wreckingbolt" "Thornblade" "Undertow" "Dark Matter" "Crystalfist" "Bootleg" "Quad Smack" "Hot Shot" "Rush" "Skunkmoth" "Bashmouth" "AntiVilgax" "Alien V" "Ventrilosquid" "Thriller Whale" "Squirtapiller" "Snark Tanque" "Decagon Vreedle" "Hippopotamass" "Bungeesponge" "Alien Z" "Sussy Baka") }}
+{{ $upgradetype := (cslice "Ultimate" "Negative" "Omni-Kix" "Omni-Naut" "Omni-Enhanced") }}
+{{ $rarity := (cslice "Common" "Uncommon" "Rare" "Ultra Rare")}}
 
 {{/* set cslice length variables so we don't need to manually count the length of the cslices */}}
 	{{$upgradetypelength := len $upgradetype}}
@@ -34,21 +35,6 @@
 	{{ $authorActive := "https://cdn.discordapp.com/avatars/783308877935804416/149f63529aeb00f4eafc24933d091fbd.png" }}
 	{{ $authorTimeout := "https://i.imgur.com/sSlStfV.png" }}
 	{{ $authorNegative := "https://i.imgur.com/Tgfxb5G.png" }}
-	
-{{ $alienData := sdict 
-	"Heatblast" (sdict 
-		"image" "https://static.wikia.nocookie.net/ben10/images/2/20/Heatblast_omniverse_official.png/revision/latest/scale-to-width-down/685?cb=20141129031156"
-		"thumbnail" "https://static.wikia.nocookie.net/ben10/images/2/20/Heatblast_omniverse_official.png/revision/latest/scale-to-width-down/685?cb=20141129031156"
-		"rarity" "rare"
-	)
-}}
-
-{{ $upgradeData := sdict
-	"Negative" (sdict 
-		"embedColour" "15539494"
-		"authorIcon" "https://i.imgur.com/Tgfxb5G.png"
-	)
-}}
 
 {{/* variables for cooldown colours */}}
 	{{ $colourActive := 3066993 }}
@@ -59,27 +45,80 @@
 	{{ $colourOmniEnhanced := 5242878 }}
 	{{ $colourFemboy := 15315166 }}
 
-{{/* do random rolls of variables to pick aliens, upgrade type, and upgrade chance */}}
+{{/* Data for random aliens */}}
+{{ $alienData := sdict 
+	"Heatblast" (sdict 
+		"image" "https://static.wikia.nocookie.net/ben10/images/2/20/Heatblast_omniverse_official.png/revision/latest/scale-to-width-down/685?cb=20141129031156"
+		"thumbnail" "https://static.wikia.nocookie.net/ben10/images/2/20/Heatblast_omniverse_official.png/revision/latest/scale-to-width-down/685?cb=20141129031156"
+		"rarity" "rare"
+	) 
+	"Wildmutt" (sdict 
+		"image" ""
+		"thumbnail" ""
+		"rarity" "uncommon"
+	) 
+}}
+
+{{/* create a cslice, Range through the alien data & add it to the cslice, so we can use the cslice get a random name using index*/}}
+	{{ $alienDataKeys := cslice }}
+	{{ range $k, $v := $alienData }}
+		{{ $alienDataKeys = $alienDataKeys.Append $k }}
+	{{ end }}
+{{/* Get the length of the alien data and grab a random key */}}
+	{{ $alienDataLen := len $alienDataKeys }}
+	{{ $curAlienKey := toString (index $alienDataKeys (randInt 0 1)) }}
+{{/* Use the key to get the data for an alien & then put it into its own variables */}}
+	{{ $curAlienData := $alienData.Get $curAlienKey }}
+	{{ $curAlienImage := $curAlienData.Get "image" }}
+	{{ $curAlienThumb := $curAlienData.Get "thumbnail" }}
+	{{ $curAlienRarity := $curAlienData.Get "rarity" }}
+
+{{ $upgradeData := sdict
+	"Negative" (sdict 
+		"embedColour" "15539494"
+		"authorIcon" "https://i.imgur.com/Tgfxb5G.png"
+	) 
+	"Omni-Kix" (sdict
+		"embedColour" "7535923"
+		"authorIcon" ""
+	) 
+	"Omni-Naut" (sdict
+		"embedColour" "15002862"
+		"authorIcon" ""
+	) 
+	"Omni-Enhanced" (sdict
+		"embedColour" "15315166"
+		"authorIcon" ""
+	) 
+	"Omni-Femboy" (sdict
+		"embedColour" "15315166"
+		"authorIcon" ""
+	) 
+}}
+
+{{ $upgradeDataLen := len $upgradeData }}
+
+{{/* do random rolls of variables to pick aliens, upgrade type, and upgrade chance 
 	{{ $upgradetyperoll := randInt $upgradetypelength }}
-	{{ $aliennamesroll := randInt $aliennameslength }}
+	{{ $aliennamesroll := randInt $aliennameslength }}*/}}
 	{{ $upgradechanceroll := randInt 1 10 }}
 	{{ $updgradeStr := "" }}
 
-{{/* if roll chance is 10, give user an upgraded alien, otherwise give them un-upgraded alien. I wanted this to be more elegant but i can't figure out string manipulation in this code.*/}}
+{{/* if roll chance is 10, give user an upgraded alien, otherwise give them un-upgraded alien. I wanted this to be more elegant but i can't figure out string manipulation in this code.
 {{if gt $upgradechanceroll 1}}
 	{{ $updgradeStr := (joinStr " **" (index $upgradetype $upgradetyperoll) "**") }}
 {{else}}
 	{{ $updgradeStr := "" }}
-{{end}}
-{{ $alienStr := (joinStr "" (index $aliennames $aliennamesroll) "") }}
+{{end}} */}}
+{{ $alienStr := (joinStr "" $curAlienKey "") }}
 
 {{/* Create the embed and send it */}}
 {{ $embed := cembed 
-	"author" (sdict "name" "It's Hero Time!" "url" "" "icon_url" "https://cdn.discordapp.com/avatars/783308877935804416/149f63529aeb00f4eafc24933d091fbd.png") 
-	"description" (joinStr "" .User.Mention " has transformed into" $updgradeStr " **" $alienStr "**!")
+	"author" (sdict "name" "It's Hero Time!" "url" "" "icon_url" $authorActive) 
+	"description" (joinStr "" .User.Mention " has transformed into" $updgradeStr " **" $curAlienKey "**!")
 	"color" $colourActive
-	"thumbnail" (sdict "url" "")
-	"image" (sdict "url" "")
+	"thumbnail" (sdict "url" $curAlienThumb)
+	"image" (sdict "url" $curAlienImage)
 	"footer" (sdict "text" (joinStr "" "The Omnitrix will time-out in " (toString $lengthSec) " seconds!"))
 }}
 {{ $mID := sendMessageRetID nil $embed }}
